@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-e0quiv="X-UA-Compatible" content="ie=edge" />
+    <title>Static Template</title>
+    <style>
+      .table {
+        /* background-color: #dddddd; */
+      }
+      .row {
+        /* border: 1px solid red; */
+        display: flex;
+        justify-content: center;
+      }
+      .col {
+        border-top: 2px solid lightgrey;
+        border-bottom: 2px solid grey;
+        border-left: 2px solid lightgrey;
+        border-right: 2px solid grey;
+        padding: 15px;
+        margin: 1px;
+      }
+      .col:hover {
+        background-color: #dddddd;
+      }
+      .bomb {
+        background-color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="table"></div>
+    <script>
+      // Function to generate random number
+      function randomNumber(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+      function render() {
+        var table = document.querySelector(".table");
+        var data = [1, 2, 3, 4, 5, 6];
+        var rowCount = 2;
+        var colCount = 3;
+        var dataIndex = 0;
+        var bomb = randomNumber(data[0], data[data.length - 1]);
+        console.log(bomb);
+
+        for (var j = 0; j < rowCount; j++) {
+          var row = document.createElement("div");
+          row.classList.add("row");
+          table.appendChild(row);
+
+          for (var i = 0; i < colCount; i++) {
+            var col = document.createElement("div");
+            col.classList.add("col");
+            var text = document.createTextNode(data[dataIndex]);
+            col.appendChild(text);
+            if (data[dataIndex] === bomb) {
+              col.classList.add("bomb");
+            }
+            row.appendChild(col);
+
+            dataIndex++;
+          }
+        }
+      }
+      render();
+    </script>
+  </body>
+</html>
