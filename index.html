@@ -20,26 +20,41 @@
         border-left: 2px solid lightgrey;
         border-right: 2px solid grey;
         padding: 15px;
-        margin: 1px;
+        background-color: #b6b6b6;
       }
       .col:hover {
         background-color: #dddddd;
       }
       .bomb {
-        background-color: red;
+        background-color: red !important;
+      }
+      .safe {
+        background-color: #49bc07 !important;
+      }
+      .points {
+        color: green;
+      }
+      .footer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
       }
     </style>
   </head>
+
   <body>
     <div class="table"></div>
+    <div class="footer">
+      <h3>
+        Points:
+        <span class="points"></span>
+      </h3>
+      <button onClick="playAgain()">Play again</button>
+    </div>
     <script>
-      function contains(selector, text) {
-        var elements = document.querySelectorAll(selector);
-        return [].filter.call(elements, function(element) {
-          return RegExp(text).test(element.textContent);
-        });
+      function playAgain() {
+        window.location.reload();
       }
-
       function generateRange(pCount, pMin, pMax) {
         min = pMin < pMax ? pMin : pMax;
         max = pMax > pMin ? pMax : pMin;
@@ -54,53 +69,47 @@
         }
         return resultArr;
       }
-      // Function to generate random number
-      function randomNumber(min, max) {
-        min = Math.ceil(min);
-        max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-      }
 
       function render() {
         var table = document.querySelector(".table");
-        var data = generateRange(81, 1, 81);
         var rowCount = 9;
         var colCount = 9;
         var dataIndex = 0;
         var bi = 0;
+        var points = 0;
+        var gameover = false;
         var bombIndices = generateRange(10, 1, 81);
-        var bomb = randomNumber(data[0], data[data.length - 1]);
-        console.log(data, bombIndices);
 
-        for (var j = 0; j < rowCount; j++) {
+        var pointer = document.querySelector(".points");
+        pointer.innerHTML = points;
+
+        for (let j = 0; j < rowCount; j++) {
           var row = document.createElement("div");
           row.classList.add("row");
           table.appendChild(row);
 
-          for (var i = 0; i < colCount; i++) {
+          for (let i = 1; i <= colCount; i++) {
             var col = document.createElement("div");
             col.classList.add("col");
-            var text = document.createTextNode(data[dataIndex]);
-            col.appendChild(text);
+            col.setAttribute("id", i + j * 9);
+            col.addEventListener("click", () => {
+              if (bombIndices.indexOf(i + j * 9) !== -1) {
+                while (bi < bombIndices.length) {
+                  let bombcol = document.getElementById(bombIndices[bi]);
+                  bombcol.classList.add("bomb");
+                  bi++;
+                }
+                gameover = true;
+              } else {
+                if (!gameover) {
+                  let safeCol = document.getElementById(i + j * 9);
+                  safeCol.classList.add("safe");
+                  points++;
+                  pointer.innerHTML = points;
+                }
+              }
+            });
             row.appendChild(col);
-            dataIndex++;
-          }
-        }
-
-        // setTimeout(function() {
-        //   for (let s = 1; s < bombIndices.length; s++) {
-        //     var bombers = contains(".col", bombIndices[s]);
-        //     console.log("bb", bombers);
-        //   }
-        // }, 1000);
-
-        for (var k = 0; k < data.length; k++) {
-          for (var l = 0; l < bombIndices.length; l++) {
-            if (data[k] === bombIndices[l]) {
-              var bombers = contains(".col", bombIndices[l]);
-              bombers.classList.add("bomb");
-              console.log("bb", bombers);
-            }
           }
         }
       }
