@@ -4,13 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-e0quiv="X-UA-Compatible" content="ie=edge" />
-    <title>Static Template</title>
+    <title>Bomber-JS</title>
     <style>
-      .table {
-        /* background-color: #dddddd; */
-      }
       .row {
-        /* border: 1px solid red; */
         display: flex;
         justify-content: center;
       }
@@ -43,19 +39,21 @@
   </head>
 
   <body>
-    <div class="table"></div>
+    <div class="grid"></div>
     <div class="footer">
       <h3>
         Points:
         <span class="points"></span>
       </h3>
       <button onClick="playAgain()">Play again</button>
+      <h3>Game Over<h3>
     </div>
     <script>
       function playAgain() {
         window.location.reload();
       }
-      function generateRange(pCount, pMin, pMax) {
+
+      function generateBombIndicies(pCount, pMin, pMax) {
         min = pMin < pMax ? pMin : pMax;
         max = pMax > pMin ? pMax : pMin;
         var resultArr = [],
@@ -71,27 +69,27 @@
       }
 
       function render() {
-        var table = document.querySelector(".table");
         var rowCount = 9;
         var colCount = 9;
-        var dataIndex = 0;
         var bi = 0;
         var points = 0;
         var gameover = false;
-        var bombIndices = generateRange(10, 1, 81);
-
+        var bombIndices = generateBombIndicies(10, 1, 81);
+        var grid = document.querySelector(".grid");
         var pointer = document.querySelector(".points");
         pointer.innerHTML = points;
 
+        // grid creation
         for (let j = 0; j < rowCount; j++) {
           var row = document.createElement("div");
           row.classList.add("row");
-          table.appendChild(row);
+          grid.appendChild(row);
 
           for (let i = 1; i <= colCount; i++) {
             var col = document.createElement("div");
             col.classList.add("col");
             col.setAttribute("id", i + j * 9);
+            //listener for bomb and safe buttons
             col.addEventListener("click", () => {
               if (bombIndices.indexOf(i + j * 9) !== -1) {
                 while (bi < bombIndices.length) {
